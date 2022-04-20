@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace ResRegV1cons
 {
+    class NoSuchRequest : Exception { }
     class ResAreBusy : Exception { }
     class ResIdInvalid : Exception { }
     class UnRecommended : Exception { }
@@ -121,6 +122,7 @@ namespace ResRegV1cons
         public static void Satisfy(string cn)
         {
             int ind = Convert.ToInt32(cn) - 1;
+            if (vReq_s.Count <= ind || ind < 0) throw new NoSuchRequest();
             foreach(ushort el in vReq_s[ind].Item2)
             {
                 vRes_s[el] = "F";
@@ -203,11 +205,7 @@ namespace ResRegV1cons
                     if (Command == "SATISFY") {
                         Console.WriteLine("Введите номер удовлетворяемого запроса:");
                         Model.Satisfy(Console.ReadLine()); 
-                    }/*
-                    if (Command == "SAVE") {
-                        SetUp.Save();
-                        Console.WriteLine("Нынешнее состояние сохранено.");
-                    }*/
+                    }
                     if (Command == "FREE")
                     {
                         Console.WriteLine("Введите номер ресурса:");
@@ -215,6 +213,7 @@ namespace ResRegV1cons
                         Console.WriteLine("Ресурс освобождён.");
                     };
                 }
+                catch (NoSuchRequest) { Console.WriteLine("Такого запроса нет.");  }
                 catch (OverflowException) { Console.WriteLine("Такого ресурса нет."); }
                 catch (FormatException) { Console.WriteLine("Такого ресурса нет."); }
                 catch (ResIdInvalid) { Console.WriteLine("Такого ресурса нет."); }
