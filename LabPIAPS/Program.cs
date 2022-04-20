@@ -17,7 +17,7 @@ namespace ResRegV1cons
         {
             File.WriteAllText(Path, "");
             using StreamWriter file = new StreamWriter(Directory.GetCurrentDirectory() + @"\Resmod00");
-            file.WriteLine(Convert.ToString(Model.timer));
+            file.WriteLine(Convert.ToString(Model.period));
             file.WriteLine(string.Join("", Model.vRes_s));
             foreach((int, List<int>) el in Model.vReq_s)
             {
@@ -32,7 +32,7 @@ namespace ResRegV1cons
         private static void ClearModel()
         {
             Console.WriteLine("Укажите срок предоставления ресурса: ");
-            Model.timer = Convert.ToUInt16(Console.ReadLine());
+            Model.period = Convert.ToUInt16(Console.ReadLine());
             Console.WriteLine("Укажите количество ресурсов:");
             try
             {
@@ -57,7 +57,7 @@ namespace ResRegV1cons
             {
                 Model.vRes_s.Clear();
                 string[] lines = File.ReadAllLines(Path);
-                Model.timer = Convert.ToInt32(lines[0]);
+                Model.period = Convert.ToInt32(lines[0]);
                 for (int i = 0; i < lines[1].Length; ++i) Model.vRes_s.Add(Convert.ToString(lines[1][i]));
                 for(int i = 2; i < lines.Length; ++i)
                 {
@@ -118,7 +118,7 @@ namespace ResRegV1cons
     {
         public static List<string> vRes_s = new List<string>();//Модель набора ресурсов
         public static List<(int, List<int>)> vReq_s = new List<(int, List<int>)>();
-        public static int timer;
+        public static int period;
         public static void Satisfy(string cn)
         {
             int ind = Convert.ToInt32(cn) - 1;
@@ -129,7 +129,7 @@ namespace ResRegV1cons
             }
             vReq_s.RemoveAt(ind);
         }
-        public static void Free(string cn) //fix!
+        public static void Free(string cn)
         {
             if ((Convert.ToInt16(cn) > vRes_s.Count) | (Convert.ToInt16(cn) < 0)) throw new ResIdInvalid();
             if (vRes_s[Convert.ToInt16(cn)] == "F") throw new ResWasFree();
@@ -154,7 +154,7 @@ namespace ResRegV1cons
             for (int i = 0; i < vRes_s.Count; i++)
             {
                 if (vRes_s[i] == "F") {
-                    vReq_s.Add((timer, new List<int>(){i}));
+                    vReq_s.Add((period, new List<int>(){i}));
                     vRes_s[i] = "B";
                     return Convert.ToString(i + 1); 
                 }
@@ -180,7 +180,7 @@ namespace ResRegV1cons
                         vRes_s.Add("B");
                         tmp.Item2.Add(vRes_s.Count - 1);
                     }
-                    tmp.Item1 = timer;
+                    tmp.Item1 = period;
                 }
                 vReq_s[i] = tmp; 
             }
